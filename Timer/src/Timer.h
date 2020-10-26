@@ -2,20 +2,20 @@
 // File Timer.h
 // Author Francesco Mecatti
 //
-#ifndef TIMER_H
+#ifndef TIMER_H  // Include guard
 #define TIMER_H
 
 #include <msp430.h>
 #include <stdint.h>
+#include <stdbool.h>
+
+#define __wait __attribute__((optimize("O0")))  // Use it if the function contains dead times
 
 namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven capture/compare registers.
     //  *** Structure ***
     //  Registers
     //      Fields
     //          Values
-
-    // #define dec_reg auto&  // Declare Register
-    // #define dec_field const auto&  // Declare Field
 
     // dec_reg CTL = TA0CTL;  // ConTroL register - for configuration
         // SSEL --> Source clock SELect field
@@ -46,9 +46,6 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
     // dec_reg CCR0 = TA0CCR0;     // Counter upper bound - when reached Timer_A ISR is executed
                                 // If is equal to 0b the timer stops, otherwise it operates in MC mode
 
-    // #undef dec_reg
-    // #undef dec_field
-
     typedef void (*isr_pointer)(void);  // ISR - Interrupt Service Routine - pointer
 
     class Timer {
@@ -57,7 +54,7 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
         // Timer(const uint32_t millis, isr_pointer callback_function);  // Creates timer and attach callaback_function (called every millis [ms])
         uint32_t getElapsedTime(void) const;  // Getter of counter
         bool addCallback(const isr_pointer callback_function, const uint32_t millis);  // callback_function called every millis
-        void wait(const uint32_t millis) const;  // Waits millis [ms] - do nothing for millis
+        __wait void wait(const uint32_t millis) const;  // Waits millis [ms] - do nothing for millis and then return
         void reset(void);
         uint32_t start(void) const;  // Run timer. return: current counter value (elapsed millis)
         uint32_t stop(void) const;  // Stop timer. return: current counter value (elapsed millis)
@@ -65,9 +62,9 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
 
     private:
         static uint8_t sTimerInstanceCount;  // Only one instance of this class can exist at a time
-        static bool unique;
+        static bool unique;  // True if the instance was unique when constructed
         static uint32_t counter;  // Internal counter [ms] - it contains elapsed millis. Up to 2^32 milliseconds
-        static uint32_t upper_bound;  // When reached counter is reset
+        static uint32_t upperBound;  // When reached counter is reset
         static isr_pointer aCallbackFunctions[64];  // Multiple callback functions are supported (executed at different time intervals)
         static uint32_t aTimesMap[64];  // Location i contains the time [ms] at which aCallbackFunctions[i] must be executed
         static uint8_t mapDim;  // Number of callback functions inserted

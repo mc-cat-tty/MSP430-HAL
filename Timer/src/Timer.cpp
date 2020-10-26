@@ -1,3 +1,7 @@
+//
+// File Timer.cpp
+// Author Francesco Mecatti
+//
 #include "Timer.h"
 
 using namespace TimerA;
@@ -5,6 +9,10 @@ using namespace TimerA;
 
 #define dec_reg auto&  // Declare Register
 #define dec_field const auto&  // Declare Field
+
+//  *** Structure ***
+//  Registers
+//      Fields
 
 dec_reg CTL = TA0CTL;  // ConTroL register - for configuration
     dec_field CLR = TACLR;  // CLeaR bit
@@ -22,7 +30,7 @@ uint32_t Timer::aTimesMap[64];
 uint8_t Timer::mapDim;
 uint32_t Timer::counter;
 bool Timer::unique;
-uint32_t Timer::upper_bound;
+uint32_t Timer::upperBound;
 
 
 Timer::Timer() {
@@ -30,15 +38,14 @@ Timer::Timer() {
 
     if (this->isUniqueInstance()) unique = true;
     else unique = false;
-    
     if (not this->unique) return;
-    
-
+        
     this->reset();
-    this->upper_bound = 0;
+    this->upperBound = 0xFFFFFFFF-1;
     this->mapDim = 0;
 
     // *** Timer configuration ***
+    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
     this->stop();
     setSourceSelect(ACLK);
     CCR0 = 33;  // Interrupt every millisecond
@@ -74,7 +81,7 @@ bool Timer::addCallback(const isr_pointer callback_function, const uint32_t mill
         }
     }
     if (this->mapDim < 64 && not isOverlapping) {
-        if (millis > this->upper_bound) this->upper_bound = millis;  // Updating upper bound
+        // if (millis > this->upper_bound) this->setUpperBound(millis);  // Updating upper bound
         this->aTimesMap[this->mapDim] = millis;
         this->aCallbackFunctions[this->mapDim] = callback_function;
         this->mapDim++;
@@ -86,6 +93,11 @@ bool Timer::addCallback(const isr_pointer callback_function, const uint32_t mill
 void Timer::reset(void) {
     if (not this->unique) return;
     this->counter = 0;
+}
+
+__wait void Timer::wait(const uint32_t millis) const {
+    uint32_t init_time = this->getElapsedTime();
+    while (this->getElapsedTime() < init_time+millis) ;;  // Do nothing
 }
 
 uint32_t Timer::start(void) const{
@@ -143,12 +155,12 @@ uint32_t Timer::getCounter(void) const {
 
 void Timer::setUpperBound(const uint32_t upper_bound) {
     if (not this->unique) return;
-    this->upper_bound = upper_bound;
+    this->upperBound = upper_bound;
 }
 
 uint32_t Timer::getUpperBound(void) const {
     if (not this->unique) return 0;
-    return this->upper_bound;
+    return this->upperBound;
 }
 
 void Timer::increaseCounter(void) {
@@ -178,6 +190,6 @@ bool Timer::isAttachedToISR(uint32_t millis) const{
 __interrupt void Timer::interrupt_handler(void) {
     this->increaseCounter();
     if (this->isAttachedToISR(this->counter)) this->getISRAttachedTo(this->counter)();
-    if (this->getCounter() > this->upper_bound) this->reset();
+    if (this->getCounter() > this->upperBound) this->reset();
     this->clearInterruptFlag();
 }
