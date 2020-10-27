@@ -11,7 +11,7 @@
 
 namespace GPIO {
     namespace Port {
-        
+
     }
 }
 

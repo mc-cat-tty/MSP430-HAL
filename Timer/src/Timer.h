@@ -20,8 +20,8 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
     // dec_reg CTL = TA0CTL;  // ConTroL register - for configuration
         // SSEL --> Source clock SELect field
             enum SourceSelect { TACLK = TASSEL__TACLK,
-                                ACLK = TASSEL__ACLK,
-                                SMCLK = TASSEL__SMCLK,
+                                ACLK = TASSEL__ACLK,  // 33 kHz
+                                SMCLK = TASSEL__SMCLK,  // 1 MHz
                                 INCLK = TASSEL__INCLK };
         // ID --> Input Divider field
             enum InputDivider { DIV1 = ID__1,
