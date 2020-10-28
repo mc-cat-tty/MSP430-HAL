@@ -15,7 +15,7 @@ namespace Debug  {
     // When called turns on green led. Place where you want to valuate if that point is reached
     void reachedA(void);
 
-    // When reached turns on red led. Place where you want to valuate if that point is reached
+    // When called turns on red led. Place where you want to valuate if that point is reached
     void reachedB(void);
 
     // Output the value of num by blinking green led that number of times. Red led blinks before a new "transmission"
