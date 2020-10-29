@@ -3,6 +3,7 @@
 // Author Francesco Mecatti
 //
 #include "Timer.h"
+#include <Debug.h>  // TODO: remove
 
 using namespace TimerA;
 
@@ -38,6 +39,9 @@ Timer::Timer() {
 
     if (this->isUniqueInstance()) unique = true;
     else unique = false;
+
+    Debug::reachedB(); // TODO: remove
+
     if (not this->unique) return;
         
     this->reset();
