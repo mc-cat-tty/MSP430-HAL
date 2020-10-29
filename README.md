@@ -6,7 +6,7 @@ HAL - Hardware Abstraction Layer - for MSP430. Tested and designed on F5529 mode
 
 Compile with ```-std=c++0x``` as **build flag**
 
-Tested with ***MSP430-GCC***
+Tested with ***MSP430-GCC*** compiler
 
 ## TimerA::Timer
 
