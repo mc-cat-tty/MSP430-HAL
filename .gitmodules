@@ -1,0 +1,3 @@
+[submodule "MSP430-display"]
+	path = MSP430-display
+	url = https://github.com/Francesco-Mecatti/MSP430-display
