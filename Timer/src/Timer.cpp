@@ -99,7 +99,7 @@ void Timer::reset(void) {
     this->counter = 0;
 }
 
-__wait void Timer::wait(const uint32_t millis) const {
+__await void Timer::wait(const uint32_t millis) const {
     uint32_t init_time = this->getElapsedTime();
     while (this->getElapsedTime() < init_time+millis) ;;  // Do nothing
 }

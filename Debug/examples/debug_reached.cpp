@@ -12,11 +12,17 @@ int main(void) {
   int x = 0;
   while (x++ < 10) ;;  // Do nothing
   for (int i = 0; i < 100; i++) {
-      if (i > 50) {
+      if (i == 50) {
           // I want to know if this code will ever be reached
           Debug::reachedA();  // So I place the reachedA() function
       }
-      if (i>80) {
+      else if (i == 60) {
+          Debug::reachedA();  // Point A is already reached, so it blinks the led
+      }
+      else if (i == 70) {
+          Debug::reachedA();
+      }
+      else if (i==80) {
           test();
       }
   }

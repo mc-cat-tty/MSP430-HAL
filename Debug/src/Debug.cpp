@@ -13,8 +13,8 @@ namespace {  // Anonymous namespace for private members
     void turnOffGreenLed(void);
     void turnOnRedLed(void);
     void turnOffRedLed(void);
-    __wait void blinkGreenLed(void);
-    __wait void blinkRedLed(void);
+    __await void blinkGreenLed(void);
+    __await void blinkRedLed(void);
 
     void set(volatile unsigned char* reg, const short int& mask) {
         *reg |= mask;
@@ -52,14 +52,14 @@ namespace {  // Anonymous namespace for private members
         unset(&P1OUT, BIT0);
     }
 
-    __wait void blinkGreenLed(void) {
+    __await void blinkGreenLed(void) {
         __delay_cycles(WAIT_TIME);
         turnOnGreenLed();
         __delay_cycles(WAIT_TIME);
         turnOffGreenLed();
     }
 
-    __wait void blinkRedLed(void) {
+    __await void blinkRedLed(void) {
         __delay_cycles(WAIT_TIME);
         turnOnRedLed();
         __delay_cycles(WAIT_TIME);
@@ -67,17 +67,21 @@ namespace {  // Anonymous namespace for private members
     }
 }
 
-void Debug::reachedA(void) {
-    setupGreenLed();
-    turnOnGreenLed();
+__await void Debug::reachedA(void) {
+    setupGreenLed();  // During setup the led is turned off
+    __delay_cycles(WAIT_TIME);  // Wait + turnOn ==> blink
+    turnOnGreenLed();  // If already on blinks, otherwise nothing change
+    __delay_cycles(WAIT_TIME);  // Maintain the current state
 }
 
-void Debug::reachedB(void) {
-    setupRedLed();
-    turnOnRedLed();
+__await void Debug::reachedB(void) {
+    setupRedLed();  // During setup the led is turned off
+    __delay_cycles(WAIT_TIME*2);  // Wait + turnOn ==> blink
+    turnOnRedLed();  // If already on blinks, otherwise nothing change
+    __delay_cycles(WAIT_TIME);  // Maintain the current state
 }
 
-__wait void Debug::value(const unsigned short int num) {
+__await void Debug::value(const unsigned short int num) {
     setupGreenLed();
     setupRedLed();
     blinkRedLed();

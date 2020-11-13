@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define __wait __attribute__((optimize("O0")))  // Use it if the function contains dead times
+#define __await __attribute__((optimize("O0")))  // Use it if the function contains dead times
 
 namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven capture/compare registers.
     //  *** Structure ***
