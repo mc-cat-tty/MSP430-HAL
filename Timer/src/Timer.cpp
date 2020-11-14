@@ -3,7 +3,6 @@
 // Author Francesco Mecatti
 //
 #include "Timer.h"
-#include <Debug.h>  // TODO: remove
 
 using namespace TimerA;
 
@@ -30,7 +29,6 @@ isr_pointer Timer::aCallbackFunctions[64];
 uint32_t Timer::aTimesMap[64];
 uint8_t Timer::mapDim;
 uint32_t Timer::counter;
-bool Timer::unique;
 uint32_t Timer::upperBound;
 
 
@@ -40,23 +38,22 @@ Timer::Timer() {
     if (this->isUniqueInstance()) unique = true;
     else unique = false;
 
-    Debug::reachedB(); // TODO: remove
+    if (this->unique) {
+    
+        this->reset();
+        this->upperBound = 0xFFFFFFFF-1;
+        this->mapDim = 0;
 
-    if (not this->unique) return;
-        
-    this->reset();
-    this->upperBound = 0xFFFFFFFF-1;
-    this->mapDim = 0;
+        // *** Timer configuration ***
+        WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
+        this->stop();
+        setSourceSelect(ACLK);
+        CCR0 = 33;  // Interrupt every millisecond
+        this->enableInterrupt();
+        this->clearInterruptFlag();
 
-    // *** Timer configuration ***
-    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
-    this->stop();
-    setSourceSelect(ACLK);
-    CCR0 = 33;  // Interrupt every millisecond
-    this->enableInterrupt();
-    this->clearInterruptFlag();
-
-    __enable_interrupt();  // GIE = 1
+        __enable_interrupt();  // GIE = 1
+    }    
 }
 
 /*
@@ -100,6 +97,7 @@ void Timer::reset(void) {
 }
 
 __await void Timer::wait(const uint32_t millis) const {
+    if (not this->unique) return;
     uint32_t init_time = this->getElapsedTime();
     while (this->getElapsedTime() < init_time+millis) ;;  // Do nothing
 }

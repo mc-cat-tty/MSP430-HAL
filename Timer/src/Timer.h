@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 #define __await __attribute__((optimize("O0")))  // Use it if the function contains dead times
 
 namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven capture/compare registers.
@@ -48,6 +49,7 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
 
     typedef void (*isr_pointer)(void);  // ISR - Interrupt Service Routine - pointer
 
+
     class Timer {
     public:
         Timer();  // Creates timer in count mode - used to wait() or to keep track of elapsed time
@@ -62,7 +64,7 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
 
     private:
         static uint8_t sTimerInstanceCount;  // Only one instance of this class can exist at a time
-        static bool unique;  // True if the instance was unique when constructed
+        bool unique;  // True if the instance was unique when constructed
         static uint32_t counter;  // Internal counter [ms] - it contains elapsed millis. Up to 2^32 milliseconds
         static uint32_t upperBound;  // When reached counter is reset
         static isr_pointer aCallbackFunctions[64];  // Multiple callback functions are supported (executed at different time intervals)
