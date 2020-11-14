@@ -54,7 +54,7 @@ namespace TimerA {  // Timer_A is a 16-bit timer/counter with up to seven captur
         // Timer(const uint32_t millis, isr_pointer callback_function);  // Creates timer and attach callaback_function (called every millis [ms])
         uint32_t getElapsedTime(void) const;  // Getter of counter
         bool addCallback(const isr_pointer callback_function, const uint32_t millis);  // callback_function called every millis
-        __wait void wait(const uint32_t millis) const;  // Waits millis [ms] - do nothing for millis and then return
+        __await void wait(const uint32_t millis) const;  // Waits millis [ms] - do nothing for millis and then return
         void reset(void);
         uint32_t start(void) const;  // Run timer. return: current counter value (elapsed millis)
         uint32_t stop(void) const;  // Stop timer. return: current counter value (elapsed millis)
