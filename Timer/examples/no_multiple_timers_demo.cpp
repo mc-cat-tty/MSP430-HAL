@@ -1,5 +1,5 @@
 //
-// File no_multiple_timers_demo1.cpp
+// File no_multiple_timers_demo.cpp
 // Author Francesco Mecatti
 //
 #include <msp430.h>
